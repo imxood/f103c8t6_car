@@ -33,6 +33,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f1xx.h"
 #include "stm32f1xx_it.h"
+#include "cmsis_os.h"
 
 /* USER CODE BEGIN 0 */
 
@@ -130,19 +131,6 @@ void UsageFault_Handler(void)
 }
 
 /**
-* @brief This function handles System service call via SWI instruction.
-*/
-void SVC_Handler(void)
-{
-  /* USER CODE BEGIN SVCall_IRQn 0 */
-
-  /* USER CODE END SVCall_IRQn 0 */
-  /* USER CODE BEGIN SVCall_IRQn 1 */
-
-  /* USER CODE END SVCall_IRQn 1 */
-}
-
-/**
 * @brief This function handles Debug monitor.
 */
 void DebugMon_Handler(void)
@@ -156,19 +144,6 @@ void DebugMon_Handler(void)
 }
 
 /**
-* @brief This function handles Pendable request for system service.
-*/
-void PendSV_Handler(void)
-{
-  /* USER CODE BEGIN PendSV_IRQn 0 */
-
-  /* USER CODE END PendSV_IRQn 0 */
-  /* USER CODE BEGIN PendSV_IRQn 1 */
-
-  /* USER CODE END PendSV_IRQn 1 */
-}
-
-/**
 * @brief This function handles System tick timer.
 */
 void SysTick_Handler(void)
@@ -176,7 +151,7 @@ void SysTick_Handler(void)
   /* USER CODE BEGIN SysTick_IRQn 0 */
 
   /* USER CODE END SysTick_IRQn 0 */
-  
+  osSystickHandler();
   /* USER CODE BEGIN SysTick_IRQn 1 */
 
   /* USER CODE END SysTick_IRQn 1 */
@@ -188,6 +163,46 @@ void SysTick_Handler(void)
 /* For the available peripheral interrupt handler names,                      */
 /* please refer to the startup file (startup_stm32f1xx.s).                    */
 /******************************************************************************/
+
+/**
+* @brief This function handles TIM2 global interrupt.
+*/
+void TIM2_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM2_IRQn 0 */
+	if (LL_TIM_IsActiveFlag_UPDATE(TIM2)) {
+		LL_TIM_ClearFlag_UPDATE(TIM2);
+	}
+
+  /* USER CODE END TIM2_IRQn 0 */
+  /* USER CODE BEGIN TIM2_IRQn 1 */
+
+  /* USER CODE END TIM2_IRQn 1 */
+}
+
+/**
+* @brief This function handles USART1 global interrupt.
+*/
+void USART1_IRQHandler(void)
+{
+  /* USER CODE BEGIN USART1_IRQn 0 */
+	uint8_t tmp;
+	// �?测是否是接受中断
+	if (LL_USART_IsActiveFlag_RXNE(USART1)) {
+		LL_GPIO_ResetOutputPin(GPIOC, LL_GPIO_PIN_13); // 打开LED�?
+		tmp = LL_USART_ReceiveData8(USART1);   // 读取出来接收到的数据
+		LL_USART_TransmitData8(USART1, tmp);  // 把数据再从串口发送出
+	}
+	// �?测是否是传输完成
+	else if (LL_USART_IsActiveFlag_TC(USART1)) {
+		LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_13); // 关闭LED�?
+	}
+
+  /* USER CODE END USART1_IRQn 0 */
+  /* USER CODE BEGIN USART1_IRQn 1 */
+
+  /* USER CODE END USART1_IRQn 1 */
+}
 
 /* USER CODE BEGIN 1 */
 
