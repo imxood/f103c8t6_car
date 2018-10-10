@@ -128,7 +128,7 @@ void MX_TIM3_Init(void)
 
   LL_TIM_IC_SetPrescaler(TIM3, LL_TIM_CHANNEL_CH1, LL_TIM_ICPSC_DIV1);
 
-  LL_TIM_IC_SetFilter(TIM3, LL_TIM_CHANNEL_CH1, LL_TIM_IC_FILTER_FDIV32_N8);
+  LL_TIM_IC_SetFilter(TIM3, LL_TIM_CHANNEL_CH1, LL_TIM_IC_FILTER_FDIV16_N5);
 
   LL_TIM_IC_SetPolarity(TIM3, LL_TIM_CHANNEL_CH1, LL_TIM_IC_POLARITY_RISING);
 
@@ -136,13 +136,13 @@ void MX_TIM3_Init(void)
 
   LL_TIM_IC_SetPrescaler(TIM3, LL_TIM_CHANNEL_CH2, LL_TIM_ICPSC_DIV1);
 
-  LL_TIM_IC_SetFilter(TIM3, LL_TIM_CHANNEL_CH2, LL_TIM_IC_FILTER_FDIV32_N8);
+  LL_TIM_IC_SetFilter(TIM3, LL_TIM_CHANNEL_CH2, LL_TIM_IC_FILTER_FDIV16_N5);
 
   LL_TIM_IC_SetPolarity(TIM3, LL_TIM_CHANNEL_CH2, LL_TIM_IC_POLARITY_RISING);
 
-  TIM_InitStruct.Prescaler = 3;
+  TIM_InitStruct.Prescaler = 0;
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
-  TIM_InitStruct.Autoreload = 0;
+  TIM_InitStruct.Autoreload = 0xffff;
   TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
   LL_TIM_Init(TIM3, &TIM_InitStruct);
 
@@ -156,19 +156,18 @@ void MX_TIM3_Init(void)
 
 /* USER CODE BEGIN 1 */
 
-void user_tim2Init()
-{
-	LL_TIM_CC_EnableChannel(TIM2, LL_TIM_CHANNEL_CH2);
-	LL_TIM_EnableIT_UPDATE(TIM2);
-	LL_TIM_EnableCounter(TIM2);
+void user_tim2Init() {
+//	LL_TIM_EnableIT_CC2(TIM2);
+	LL_TIM_EnableIT_UPDATE(TIM2); 	// 使能更新中断
+//	LL_TIM_ClearFlag_CC2(TIM2);
+//	LL_TIM_SetCounter(TIM2, 0);
+	LL_TIM_CC_EnableChannel(TIM2, LL_TIM_CHANNEL_CH2); // 使能chanel2通道
+	LL_TIM_EnableCounter(TIM2);		// 使能计数�????
 }
 
-void user_tim17IRQ()
-{
-	if(LL_TIM_IsActiveFlag_UPDATE(TIM2))
-	{
-		LL_TIM_ClearFlag_UPDATE(TIM2);
-	}
+void user_tim3Init() {
+	LL_TIM_CC_EnableChannel(TIM3, LL_TIM_CHANNEL_CH1 | LL_TIM_CHANNEL_CH2);
+	LL_TIM_EnableCounter(TIM3);
 }
 
 /* USER CODE END 1 */

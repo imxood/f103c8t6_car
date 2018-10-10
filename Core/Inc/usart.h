@@ -68,6 +68,7 @@
 #include "main.h"
 
 /* USER CODE BEGIN Includes */
+#include <stdio.h>
 
 /* USER CODE END Includes */
 
@@ -81,6 +82,8 @@ void MX_USART1_UART_Init(void);
 
 /* USER CODE BEGIN Prototypes */
 void user_usartInit();
+
+int fputc(int ch, FILE *f);
 
 /* USER CODE END Prototypes */
 

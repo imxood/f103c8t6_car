@@ -36,6 +36,7 @@
 #include "cmsis_os.h"
 
 /* USER CODE BEGIN 0 */
+#include <stdio.h>
 
 /* USER CODE END 0 */
 
@@ -172,6 +173,7 @@ void TIM2_IRQHandler(void)
   /* USER CODE BEGIN TIM2_IRQn 0 */
 	if (LL_TIM_IsActiveFlag_UPDATE(TIM2)) {
 		LL_TIM_ClearFlag_UPDATE(TIM2);
+//		LL_USART_TransmitData8(USART1, tmp);
 	}
 
   /* USER CODE END TIM2_IRQn 0 */
@@ -187,15 +189,16 @@ void USART1_IRQHandler(void)
 {
   /* USER CODE BEGIN USART1_IRQn 0 */
 	uint8_t tmp;
-	// �?测是否是接受中断
+	// �?????测是否是接受中断
 	if (LL_USART_IsActiveFlag_RXNE(USART1)) {
-		LL_GPIO_ResetOutputPin(GPIOC, LL_GPIO_PIN_13); // 打开LED�?
+		LL_GPIO_ResetOutputPin(GPIOC, LL_GPIO_PIN_13); // 打开LED�?????
 		tmp = LL_USART_ReceiveData8(USART1);   // 读取出来接收到的数据
 		LL_USART_TransmitData8(USART1, tmp);  // 把数据再从串口发送出
+		LL_GPIO_ResetOutputPin(GPIOC, LL_GPIO_PIN_13);
 	}
-	// �?测是否是传输完成
+	// �?????测是否是传输完成
 	else if (LL_USART_IsActiveFlag_TC(USART1)) {
-		LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_13); // 关闭LED�?
+		LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_13); // 关闭LED�?????
 	}
 
   /* USER CODE END USART1_IRQn 0 */

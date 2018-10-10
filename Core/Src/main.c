@@ -54,6 +54,7 @@
 #include "gpio.h"
 
 /* USER CODE BEGIN Includes */
+#include <stdio.h>
 
 /* USER CODE END Includes */
 
@@ -112,6 +113,7 @@ int main(void)
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 	user_tim2Init();
+	user_tim3Init();
 	user_usartInit();
 
   /* USER CODE END 2 */

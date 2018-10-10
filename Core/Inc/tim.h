@@ -73,6 +73,7 @@ void MX_TIM3_Init(void);
 /* USER CODE BEGIN Prototypes */
 
 void user_tim2Init(void);
+void user_tim3Init(void);
 
 /* USER CODE END Prototypes */
 
