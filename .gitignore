@@ -5,3 +5,4 @@ f103c8t6_car.xml
 .mxproject
 Drivers
 Middlewares
+STM32F103C8Tx_FLASH.ld
