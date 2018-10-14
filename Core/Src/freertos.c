@@ -55,7 +55,7 @@
 #include "cmsis_os.h"
 
 /* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
+/* USER CODE BEGIN Includes */     
 #include <stdio.h>
 
 /* USER CODE END Includes */
@@ -98,56 +98,56 @@ void startEncoderTask(void const * argument);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /**
- * @brief  FreeRTOS initialization
- * @param  None
- * @retval None
- */
+  * @brief  FreeRTOS initialization
+  * @param  None
+  * @retval None
+  */
 void MX_FREERTOS_Init(void) {
-	/* USER CODE BEGIN Init */
+  /* USER CODE BEGIN Init */
 
-	/* USER CODE END Init */
+  /* USER CODE END Init */
 
-	/* USER CODE BEGIN RTOS_MUTEX */
+  /* USER CODE BEGIN RTOS_MUTEX */
 	/* add mutexes, ... */
-	/* USER CODE END RTOS_MUTEX */
+  /* USER CODE END RTOS_MUTEX */
 
-	/* Create the semaphores(s) */
-	/* definition and creation of serialSem */
-	osSemaphoreDef(serialSem);
-	serialSemHandle = osSemaphoreCreate(osSemaphore(serialSem), 1);
+  /* Create the semaphores(s) */
+  /* definition and creation of serialSem */
+  osSemaphoreDef(serialSem);
+  serialSemHandle = osSemaphoreCreate(osSemaphore(serialSem), 1);
 
-	/* USER CODE BEGIN RTOS_SEMAPHORES */
+  /* USER CODE BEGIN RTOS_SEMAPHORES */
 	/* add semaphores, ... */
-	/* USER CODE END RTOS_SEMAPHORES */
+  /* USER CODE END RTOS_SEMAPHORES */
 
-	/* USER CODE BEGIN RTOS_TIMERS */
+  /* USER CODE BEGIN RTOS_TIMERS */
 	/* start timers, add new ones, ... */
-	/* USER CODE END RTOS_TIMERS */
+  /* USER CODE END RTOS_TIMERS */
 
-	/* Create the thread(s) */
-	/* definition and creation of DefaultTask */
-	osThreadDef(DefaultTask, startDefaultTask, osPriorityNormal, 0, 128);
-	DefaultTaskHandle = osThreadCreate(osThread(DefaultTask), NULL);
+  /* Create the thread(s) */
+  /* definition and creation of DefaultTask */
+  osThreadDef(DefaultTask, startDefaultTask, osPriorityNormal, 0, 128);
+  DefaultTaskHandle = osThreadCreate(osThread(DefaultTask), NULL);
 
-	/* definition and creation of MotorTask */
-	osThreadDef(MotorTask, startMotorTask, osPriorityIdle, 0, 128);
-	MotorTaskHandle = osThreadCreate(osThread(MotorTask), NULL);
+  /* definition and creation of MotorTask */
+  osThreadDef(MotorTask, startMotorTask, osPriorityIdle, 0, 128);
+  MotorTaskHandle = osThreadCreate(osThread(MotorTask), NULL);
 
-	/* definition and creation of MonitorTask */
-	osThreadDef(MonitorTask, startMonitorTask, osPriorityIdle, 0, 128);
-	MonitorTaskHandle = osThreadCreate(osThread(MonitorTask), NULL);
+  /* definition and creation of MonitorTask */
+  osThreadDef(MonitorTask, startMonitorTask, osPriorityIdle, 0, 128);
+  MonitorTaskHandle = osThreadCreate(osThread(MonitorTask), NULL);
 
-	/* definition and creation of EncoderTask */
-	osThreadDef(EncoderTask, startEncoderTask, osPriorityIdle, 0, 128);
-	EncoderTaskHandle = osThreadCreate(osThread(EncoderTask), NULL);
+  /* definition and creation of EncoderTask */
+  osThreadDef(EncoderTask, startEncoderTask, osPriorityIdle, 0, 128);
+  EncoderTaskHandle = osThreadCreate(osThread(EncoderTask), NULL);
 
-	/* USER CODE BEGIN RTOS_THREADS */
+  /* USER CODE BEGIN RTOS_THREADS */
 	/* add threads, ... */
-	/* USER CODE END RTOS_THREADS */
+  /* USER CODE END RTOS_THREADS */
 
-	/* USER CODE BEGIN RTOS_QUEUES */
+  /* USER CODE BEGIN RTOS_QUEUES */
 	/* add queues, ... */
-	/* USER CODE END RTOS_QUEUES */
+  /* USER CODE END RTOS_QUEUES */
 }
 
 /* USER CODE BEGIN Header_startDefaultTask */
@@ -157,15 +157,16 @@ void MX_FREERTOS_Init(void) {
  * @retval None
  */
 /* USER CODE END Header_startDefaultTask */
-void startDefaultTask(void const * argument) {
+void startDefaultTask(void const * argument)
+{
 
-	/* USER CODE BEGIN startDefaultTask */
+  /* USER CODE BEGIN startDefaultTask */
 	/* Infinite loop */
 	for (;;) {
 //		LL_TIM_GetCounter(TIM3);
 		osDelay(1000);
 	}
-	/* USER CODE END startDefaultTask */
+  /* USER CODE END startDefaultTask */
 }
 
 /* USER CODE BEGIN Header_startMotorTask */
@@ -175,8 +176,9 @@ void startDefaultTask(void const * argument) {
  * @retval None
  */
 /* USER CODE END Header_startMotorTask */
-void startMotorTask(void const * argument) {
-	/* USER CODE BEGIN startMotorTask */
+void startMotorTask(void const * argument)
+{
+  /* USER CODE BEGIN startMotorTask */
 	/* Infinite loop */
 	for (;;) {
 //		LL_TIM_OC_SetCompareCH2(TIM2, 2400);
@@ -190,7 +192,7 @@ void startMotorTask(void const * argument) {
 		LL_TIM_OC_SetCompareCH2(TIM2, 7200);
 		osDelay(2000);
 	}
-	/* USER CODE END startMotorTask */
+  /* USER CODE END startMotorTask */
 }
 
 /* USER CODE BEGIN Header_startMonitorTask */
@@ -200,12 +202,13 @@ void startMotorTask(void const * argument) {
  * @retval None
  */
 /* USER CODE END Header_startMonitorTask */
-void startMonitorTask(void const * argument) {
-	/* USER CODE BEGIN startMonitorTask */
+void startMonitorTask(void const * argument)
+{
+  /* USER CODE BEGIN startMonitorTask */
 	/* Infinite loop */
-	uint32_t encode = 0;
+	volatile uint32_t encode = 0;
 	for (;;) {
-		encode = LL_TIM_GetCounter(TIM2);
+//		encode = LL_TIM_GetCounter(TIM2);
 //		LL_TIM_SetCounter(TIM2, 0);
 
 //		osSemaphoreWait(serialSemHandle, portMAX_DELAY);
@@ -214,7 +217,7 @@ void startMonitorTask(void const * argument) {
 
 		osDelay(250);
 	}
-	/* USER CODE END startMonitorTask */
+  /* USER CODE END startMonitorTask */
 }
 
 /* USER CODE BEGIN Header_startEncoderTask */
@@ -224,34 +227,33 @@ void startMonitorTask(void const * argument) {
  * @retval None
  */
 /* USER CODE END Header_startEncoderTask */
-void startEncoderTask(void const * argument) {
-	/* USER CODE BEGIN startEncoderTask */
+void startEncoderTask(void const * argument)
+{
+  /* USER CODE BEGIN startEncoderTask */
 	/* Infinite loop */
-	uint32_t cnt = 0, ccr = 0;
+	uint32_t cnt = 0;
 	for (;;) {
 		cnt = LL_TIM_GetCounter(TIM3);
-		ccr = LL_TIM_OC_GetCompareCH2(TIM3);
 //		LL_TIM_SetCounter(TIM3, 0);
 
 		osSemaphoreWait(serialSemHandle, portMAX_DELAY);
-		printf("TIM3->CNT: %lu\n", cnt);
+//		printf("TIM3->CNT: %lu\n", cnt);
 		osSemaphoreRelease(serialSemHandle);
 
 		osDelay(250);
 	}
-	/* USER CODE END startEncoderTask */
+  /* USER CODE END startEncoderTask */
 }
 
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
 /**************************************************************************
- 函数功能：小车运动数学模型
- 入口参数：速度和转角
- 返回  值：无
+ function: car motion model
+ param: velocity, angle
  **************************************************************************/
 void Kinematic_Analysis(float velocity, float angle) {
 //	Target_A = velocity * (1 + T * tan(angle) / 2 / L);
-//	Target_B = velocity * (1 - T * tan(angle) / 2 / L);      //后轮差速
+//	Target_B = velocity * (1 - T * tan(angle) / 2 / L);      //后轮差�??
 //	Servo = SERVO_INIT + angle * K;                    //舵机转向
 }
 /* USER CODE END Application */
