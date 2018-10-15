@@ -55,7 +55,7 @@
 #include "cmsis_os.h"
 
 /* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */     
+/* USER CODE BEGIN Includes */
 #include <stdio.h>
 
 /* USER CODE END Includes */
@@ -67,6 +67,18 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+enum {
+	emR, emG, emB, emHZ, emS, em0D, em0A
+};
+//7
+
+#define LEDNUM 8
+
+#define ENDMARK_0D 0x0D
+#define ENDMARK_0A 0x0A
+
+#define BREATH_WHITE     0x01
+#define BREATH_GREEN     0x02
 
 /* USER CODE END PD */
 
@@ -83,6 +95,7 @@ osThreadId DefaultTaskHandle;
 osThreadId MotorTaskHandle;
 osThreadId MonitorTaskHandle;
 osThreadId EncoderTaskHandle;
+osThreadId BreathingTaskHandle;
 osSemaphoreId serialSemHandle;
 
 /* Private function prototypes -----------------------------------------------*/
@@ -94,60 +107,65 @@ void startDefaultTask(void const * argument);
 void startMotorTask(void const * argument);
 void startMonitorTask(void const * argument);
 void startEncoderTask(void const * argument);
+void startBreathingTask(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /**
-  * @brief  FreeRTOS initialization
-  * @param  None
-  * @retval None
-  */
+ * @brief  FreeRTOS initialization
+ * @param  None
+ * @retval None
+ */
 void MX_FREERTOS_Init(void) {
-  /* USER CODE BEGIN Init */
+	/* USER CODE BEGIN Init */
 
-  /* USER CODE END Init */
+	/* USER CODE END Init */
 
-  /* USER CODE BEGIN RTOS_MUTEX */
+	/* USER CODE BEGIN RTOS_MUTEX */
 	/* add mutexes, ... */
-  /* USER CODE END RTOS_MUTEX */
+	/* USER CODE END RTOS_MUTEX */
 
-  /* Create the semaphores(s) */
-  /* definition and creation of serialSem */
-  osSemaphoreDef(serialSem);
-  serialSemHandle = osSemaphoreCreate(osSemaphore(serialSem), 1);
+	/* Create the semaphores(s) */
+	/* definition and creation of serialSem */
+	osSemaphoreDef(serialSem);
+	serialSemHandle = osSemaphoreCreate(osSemaphore(serialSem), 1);
 
-  /* USER CODE BEGIN RTOS_SEMAPHORES */
+	/* USER CODE BEGIN RTOS_SEMAPHORES */
 	/* add semaphores, ... */
-  /* USER CODE END RTOS_SEMAPHORES */
+	/* USER CODE END RTOS_SEMAPHORES */
 
-  /* USER CODE BEGIN RTOS_TIMERS */
+	/* USER CODE BEGIN RTOS_TIMERS */
 	/* start timers, add new ones, ... */
-  /* USER CODE END RTOS_TIMERS */
+	/* USER CODE END RTOS_TIMERS */
 
-  /* Create the thread(s) */
-  /* definition and creation of DefaultTask */
-  osThreadDef(DefaultTask, startDefaultTask, osPriorityNormal, 0, 128);
-  DefaultTaskHandle = osThreadCreate(osThread(DefaultTask), NULL);
+	/* Create the thread(s) */
+	/* definition and creation of DefaultTask */
+	osThreadDef(DefaultTask, startDefaultTask, osPriorityNormal, 0, 128);
+	DefaultTaskHandle = osThreadCreate(osThread(DefaultTask), NULL);
 
-  /* definition and creation of MotorTask */
-  osThreadDef(MotorTask, startMotorTask, osPriorityIdle, 0, 128);
-  MotorTaskHandle = osThreadCreate(osThread(MotorTask), NULL);
+	/* definition and creation of MotorTask */
+	osThreadDef(MotorTask, startMotorTask, osPriorityIdle, 0, 128);
+	MotorTaskHandle = osThreadCreate(osThread(MotorTask), NULL);
 
-  /* definition and creation of MonitorTask */
-  osThreadDef(MonitorTask, startMonitorTask, osPriorityIdle, 0, 128);
-  MonitorTaskHandle = osThreadCreate(osThread(MonitorTask), NULL);
+	/* definition and creation of MonitorTask */
+	osThreadDef(MonitorTask, startMonitorTask, osPriorityIdle, 0, 128);
+	MonitorTaskHandle = osThreadCreate(osThread(MonitorTask), NULL);
 
-  /* definition and creation of EncoderTask */
-  osThreadDef(EncoderTask, startEncoderTask, osPriorityIdle, 0, 128);
-  EncoderTaskHandle = osThreadCreate(osThread(EncoderTask), NULL);
+	/* definition and creation of EncoderTask */
+	osThreadDef(EncoderTask, startEncoderTask, osPriorityIdle, 0, 128);
+	EncoderTaskHandle = osThreadCreate(osThread(EncoderTask), NULL);
 
-  /* USER CODE BEGIN RTOS_THREADS */
+	/* definition and creation of BreathingTask */
+	osThreadDef(BreathingTask, startBreathingTask, osPriorityIdle, 0, 128);
+	BreathingTaskHandle = osThreadCreate(osThread(BreathingTask), NULL);
+
+	/* USER CODE BEGIN RTOS_THREADS */
 	/* add threads, ... */
-  /* USER CODE END RTOS_THREADS */
+	/* USER CODE END RTOS_THREADS */
 
-  /* USER CODE BEGIN RTOS_QUEUES */
+	/* USER CODE BEGIN RTOS_QUEUES */
 	/* add queues, ... */
-  /* USER CODE END RTOS_QUEUES */
+	/* USER CODE END RTOS_QUEUES */
 }
 
 /* USER CODE BEGIN Header_startDefaultTask */
@@ -157,16 +175,15 @@ void MX_FREERTOS_Init(void) {
  * @retval None
  */
 /* USER CODE END Header_startDefaultTask */
-void startDefaultTask(void const * argument)
-{
+void startDefaultTask(void const * argument) {
 
-  /* USER CODE BEGIN startDefaultTask */
+	/* USER CODE BEGIN startDefaultTask */
 	/* Infinite loop */
 	for (;;) {
 //		LL_TIM_GetCounter(TIM3);
 		osDelay(1000);
 	}
-  /* USER CODE END startDefaultTask */
+	/* USER CODE END startDefaultTask */
 }
 
 /* USER CODE BEGIN Header_startMotorTask */
@@ -176,9 +193,8 @@ void startDefaultTask(void const * argument)
  * @retval None
  */
 /* USER CODE END Header_startMotorTask */
-void startMotorTask(void const * argument)
-{
-  /* USER CODE BEGIN startMotorTask */
+void startMotorTask(void const * argument) {
+	/* USER CODE BEGIN startMotorTask */
 	/* Infinite loop */
 	for (;;) {
 //		LL_TIM_OC_SetCompareCH2(TIM2, 2400);
@@ -192,7 +208,7 @@ void startMotorTask(void const * argument)
 		LL_TIM_OC_SetCompareCH2(TIM2, 7200);
 		osDelay(2000);
 	}
-  /* USER CODE END startMotorTask */
+	/* USER CODE END startMotorTask */
 }
 
 /* USER CODE BEGIN Header_startMonitorTask */
@@ -202,9 +218,8 @@ void startMotorTask(void const * argument)
  * @retval None
  */
 /* USER CODE END Header_startMonitorTask */
-void startMonitorTask(void const * argument)
-{
-  /* USER CODE BEGIN startMonitorTask */
+void startMonitorTask(void const * argument) {
+	/* USER CODE BEGIN startMonitorTask */
 	/* Infinite loop */
 	volatile uint32_t encode = 0;
 	for (;;) {
@@ -217,7 +232,7 @@ void startMonitorTask(void const * argument)
 
 		osDelay(250);
 	}
-  /* USER CODE END startMonitorTask */
+	/* USER CODE END startMonitorTask */
 }
 
 /* USER CODE BEGIN Header_startEncoderTask */
@@ -227,9 +242,8 @@ void startMonitorTask(void const * argument)
  * @retval None
  */
 /* USER CODE END Header_startEncoderTask */
-void startEncoderTask(void const * argument)
-{
-  /* USER CODE BEGIN startEncoderTask */
+void startEncoderTask(void const * argument) {
+	/* USER CODE BEGIN startEncoderTask */
 	/* Infinite loop */
 	uint32_t cnt = 0;
 	for (;;) {
@@ -242,7 +256,50 @@ void startEncoderTask(void const * argument)
 
 		osDelay(250);
 	}
-  /* USER CODE END startEncoderTask */
+	/* USER CODE END startEncoderTask */
+}
+
+/* USER CODE BEGIN Header_startBreathingTask */
+/**
+ * @brief Function implementing the BreathingTask thread.
+ * @param argument: Not used
+ * @retval None
+ */
+/* USER CODE END Header_startBreathingTask */
+void startBreathingTask(void const * argument) {
+	/* USER CODE BEGIN startBreathingTask */
+	/* Infinite loop */
+	//    uint8_t red = 0;
+	uint8_t green = 0, dirc = 1;
+	//    uint8_t blue = 0;
+	for (;;) {
+		//MY_DEBUG_PRINT_INFO ( "Breathing_Task\r\n" );
+		osSemaphoreWait(serialSemHandle, portMAX_DELAY);
+//		printf("TIM3->CNT: %lu\n", cnt);
+
+		if (dirc == 0) {
+
+			green += 5;
+			SetWholeColor( GROUP_B, 0, green, 0);
+			WS2812_update( GROUP_B);
+
+			if (green == 255)
+				dirc = 1;
+		} else {
+			green -= 5;
+			SetWholeColor( GROUP_B, 0, green, 0);
+			WS2812_update( GROUP_B);
+
+			if (green == 0)
+				dirc = 0;
+
+		}
+
+		osDelay(10); //延时10ms
+		osSemaphoreRelease(serialSemHandle);
+		osDelay(10); //延时10ms
+	}
+	/* USER CODE END startBreathingTask */
 }
 
 /* Private application code --------------------------------------------------*/

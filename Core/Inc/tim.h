@@ -69,11 +69,13 @@ extern void _Error_Handler(char *, int);
 
 void MX_TIM2_Init(void);
 void MX_TIM3_Init(void);
+void MX_TIM4_Init(void);
 
 /* USER CODE BEGIN Prototypes */
 
 void user_tim2Init(void);
 void user_tim3Init(void);
+void user_tim4Init();
 
 /* USER CODE END Prototypes */
 
