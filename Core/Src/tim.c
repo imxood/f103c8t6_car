@@ -247,7 +247,7 @@ void user_tim2Init() {
 //	LL_TIM_ClearFlag_CC2(TIM2);
 //	LL_TIM_SetCounter(TIM2, 0);
 	LL_TIM_CC_EnableChannel(TIM2, LL_TIM_CHANNEL_CH2); // 使能chanel2通道
-	LL_TIM_EnableCounter(TIM2);		// 使能计数�??????
+	LL_TIM_EnableCounter(TIM2);		// 使能计数�??????
 }
 
 void user_tim3Init() {
@@ -257,6 +257,8 @@ void user_tim3Init() {
 
 void user_tim4Init() {
 	LL_TIM_CC_EnableChannel(TIM4, LL_TIM_CHANNEL_CH1 | LL_TIM_CHANNEL_CH2);
+	LL_TIM_EnableDMAReq_CC1(TIM4);
+	LL_TIM_EnableDMAReq_CC2(TIM4);
 	LL_TIM_EnableCounter(TIM4);
 }
 

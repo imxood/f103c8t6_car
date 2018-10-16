@@ -88,8 +88,6 @@ void MX_DMA_Init(void)
 
 /* USER CODE BEGIN 2 */
 void user_dmaInit() {
-	/* Configure DMA for USART RX */
-
 	// DMA1_Channel5
 	LL_DMA_SetPeriphAddress(DMA1, LL_DMA_CHANNEL_5, (uint32_t) (&USART1->DR));
 	LL_DMA_SetMemoryAddress(DMA1, LL_DMA_CHANNEL_5, (uint32_t) DMA_RX_Buffer);
