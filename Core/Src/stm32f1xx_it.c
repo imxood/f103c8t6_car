@@ -39,7 +39,6 @@
 #include <stdio.h>
 
 extern volatile uint8_t DMA_RX_Buffer[DMA_RX_BUFFER_SIZE];
-extern volatile uint8_t LEDbuffer[LED_BUFFER_SIZE];
 
 /* USER CODE END 0 */
 
@@ -167,46 +166,6 @@ void SysTick_Handler(void)
 /* For the available peripheral interrupt handler names,                      */
 /* please refer to the startup file (startup_stm32f1xx.s).                    */
 /******************************************************************************/
-
-/**
-* @brief This function handles DMA1 channel1 global interrupt.
-*/
-void DMA1_Channel1_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMA1_Channel1_IRQn 0 */
-
-	LL_TIM_DisableCounter(TIM4);
-	LL_TIM_DisableDMAReq_UPDATE(TIM4); 					// 禁止请求
-	LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_1);
-	LL_DMA_ClearFlag_TC1(DMA1);
-	memset((char *) LEDbuffer, 0, LED_BUFFER_SIZE);
-
-  /* USER CODE END DMA1_Channel1_IRQn 0 */
-  
-  /* USER CODE BEGIN DMA1_Channel1_IRQn 1 */
-
-  /* USER CODE END DMA1_Channel1_IRQn 1 */
-}
-
-/**
-* @brief This function handles DMA1 channel4 global interrupt.
-*/
-void DMA1_Channel4_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMA1_Channel4_IRQn 0 */
-
-	LL_TIM_DisableCounter(TIM4);
-	LL_TIM_DisableDMAReq_UPDATE(TIM4); 					// 禁止请求
-	LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_4);
-	LL_DMA_ClearFlag_TC4(DMA1);
-	memset((char *) LEDbuffer, 0, LED_BUFFER_SIZE);
-
-  /* USER CODE END DMA1_Channel4_IRQn 0 */
-  
-  /* USER CODE BEGIN DMA1_Channel4_IRQn 1 */
-
-  /* USER CODE END DMA1_Channel4_IRQn 1 */
-}
 
 /**
 * @brief This function handles DMA1 channel5 global interrupt.

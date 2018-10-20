@@ -95,7 +95,7 @@ osThreadId DefaultTaskHandle;
 osThreadId MotorTaskHandle;
 osThreadId MonitorTaskHandle;
 osThreadId EncoderTaskHandle;
-osThreadId BreathingTaskHandle;
+osThreadId WS2812TaskHandle;
 osSemaphoreId serialSemHandle;
 
 /* Private function prototypes -----------------------------------------------*/
@@ -107,7 +107,7 @@ void startDefaultTask(void const * argument);
 void startMotorTask(void const * argument);
 void startMonitorTask(void const * argument);
 void startEncoderTask(void const * argument);
-void startBreathingTask(void const * argument);
+void startWS2812Task(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -155,9 +155,9 @@ void MX_FREERTOS_Init(void) {
 	osThreadDef(EncoderTask, startEncoderTask, osPriorityIdle, 0, 128);
 	EncoderTaskHandle = osThreadCreate(osThread(EncoderTask), NULL);
 
-	/* definition and creation of BreathingTask */
-	osThreadDef(BreathingTask, startBreathingTask, osPriorityIdle, 0, 128);
-	BreathingTaskHandle = osThreadCreate(osThread(BreathingTask), NULL);
+	/* definition and creation of WS2812Task */
+	osThreadDef(WS2812Task, startWS2812Task, osPriorityIdle, 0, 128);
+	WS2812TaskHandle = osThreadCreate(osThread(WS2812Task), NULL);
 
 	/* USER CODE BEGIN RTOS_THREADS */
 	/* add threads, ... */
@@ -259,47 +259,31 @@ void startEncoderTask(void const * argument) {
 	/* USER CODE END startEncoderTask */
 }
 
-/* USER CODE BEGIN Header_startBreathingTask */
+/* USER CODE BEGIN Header_startWS2812Task */
 /**
- * @brief Function implementing the BreathingTask thread.
+ * @brief Function implementing the WS2812Task thread.
  * @param argument: Not used
  * @retval None
  */
-/* USER CODE END Header_startBreathingTask */
-void startBreathingTask(void const * argument) {
-	/* USER CODE BEGIN startBreathingTask */
+/* USER CODE END Header_startWS2812Task */
+void startWS2812Task(void const * argument) {
+	/* USER CODE BEGIN startWS2812Task */
 	/* Infinite loop */
-	//    uint8_t red = 0;
-	uint8_t green = 0, dirc = 1;
-	//    uint8_t blue = 0;
 	for (;;) {
-		//MY_DEBUG_PRINT_INFO ( "Breathing_Task\r\n" );
-		osSemaphoreWait(serialSemHandle, portMAX_DELAY);
-//		printf("TIM3->CNT: %lu\n", cnt);
+		// Some example procedures showing how to display to the pixels:
+		colorWipe(Color(255, 0, 0), 50); // Red
+		colorWipe(Color(0, 255, 0), 50); // Green
+		colorWipe(Color(0, 0, 255), 50); // Blue
+		// Send a theater pixel chase in...
+		theaterChase(Color(127, 127, 127), 50); // White
+		theaterChase(Color(127, 0, 0), 50);		// Red
+		theaterChase(Color(0, 0, 127), 50);		// Blue
 
-		if (dirc == 0) {
-
-			green += 5;
-			SetWholeColor( GROUP_B, 0, green, 0);
-			WS2812_update( GROUP_B);
-
-			if (green == 255)
-				dirc = 1;
-		} else {
-			green -= 5;
-			SetWholeColor( GROUP_B, 0, green, 0);
-			WS2812_update( GROUP_B);
-
-			if (green == 0)
-				dirc = 0;
-
-		}
-
-		osDelay(10); //延时10ms
-		osSemaphoreRelease(serialSemHandle);
-		osDelay(10); //延时10ms
+		rainbow(20);			 //彩虹
+		rainbowCycle(20);		 //循环
+		theaterChaseRainbow(50); //呼吸灯
 	}
-	/* USER CODE END startBreathingTask */
+	/* USER CODE END startWS2812Task */
 }
 
 /* Private application code --------------------------------------------------*/
