@@ -276,17 +276,17 @@ void startWS2812Task(void const * argument)
 	/* Infinite loop */
 	for (;;) {
 		// Some example procedures showing how to display to the pixels:
-		colorWipe(Color(255, 0, 0), 50); // Red
-		colorWipe(Color(0, 255, 0), 50); // Green
-		colorWipe(Color(0, 0, 255), 50); // Blue
+//		colorWipe(Color(255, 0, 0), 50); // Red
+//		colorWipe(Color(0, 255, 0), 50); // Green
+//		colorWipe(Color(0, 0, 255), 50); // Blue
 		// Send a theater pixel chase in...
-		theaterChase(Color(127, 127, 127), 50); // White
-		theaterChase(Color(127, 0, 0), 50);		// Red
+//		theaterChase(Color(127, 127, 127), 50); // White
+//		theaterChase(Color(127, 0, 0), 50);		// Red
 		theaterChase(Color(0, 0, 127), 50);		// Blue
-
-		rainbow(20);			 //彩虹
+//
+//		rainbow(20);			 //彩虹
 		rainbowCycle(20);		 //循环
-		theaterChaseRainbow(50); //呼吸�?
+//		theaterChaseRainbow(50); //呼吸�??
 	}
   /* USER CODE END startWS2812Task */
 }

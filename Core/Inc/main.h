@@ -95,8 +95,6 @@
 
 /* USER CODE BEGIN Private defines */
 
-#define DMA_RX_BUFFER_SIZE          64
-
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

@@ -51,6 +51,7 @@
 #include "tim.h"
 
 #include "gpio.h"
+#include "dma.h"
 
 /* USER CODE BEGIN 0 */
 
@@ -163,6 +164,23 @@ void MX_TIM4_Init(void)
   /* Peripheral clock enable */
   LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_TIM4);
 
+  /* TIM4 DMA Init */
+  
+  /* TIM4_CH2 Init */
+  LL_DMA_SetDataTransferDirection(DMA1, LL_DMA_CHANNEL_4, LL_DMA_DIRECTION_MEMORY_TO_PERIPH);
+
+  LL_DMA_SetChannelPriorityLevel(DMA1, LL_DMA_CHANNEL_4, LL_DMA_PRIORITY_HIGH);
+
+  LL_DMA_SetMode(DMA1, LL_DMA_CHANNEL_4, LL_DMA_MODE_NORMAL);
+
+  LL_DMA_SetPeriphIncMode(DMA1, LL_DMA_CHANNEL_4, LL_DMA_PERIPH_NOINCREMENT);
+
+  LL_DMA_SetMemoryIncMode(DMA1, LL_DMA_CHANNEL_4, LL_DMA_MEMORY_INCREMENT);
+
+  LL_DMA_SetPeriphSize(DMA1, LL_DMA_CHANNEL_4, LL_DMA_PDATAALIGN_HALFWORD);
+
+  LL_DMA_SetMemorySize(DMA1, LL_DMA_CHANNEL_4, LL_DMA_MDATAALIGN_HALFWORD);
+
   TIM_InitStruct.Prescaler = 0;
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
   TIM_InitStruct.Autoreload = 89;
@@ -205,7 +223,7 @@ void user_tim2Init() {
 //	LL_TIM_ClearFlag_CC2(TIM2);
 //	LL_TIM_SetCounter(TIM2, 0);
 	LL_TIM_CC_EnableChannel(TIM2, LL_TIM_CHANNEL_CH2); // 使能chanel2通道
-	LL_TIM_EnableCounter(TIM2);		// 使能计数�????????
+	LL_TIM_EnableCounter(TIM2);		// 使能计数�????????
 }
 
 void user_tim3Init() {
@@ -214,8 +232,8 @@ void user_tim3Init() {
 }
 
 void user_tim4Init() {
-	LL_TIM_CC_EnableChannel(TIM4, LL_TIM_CHANNEL_CH1 | LL_TIM_CHANNEL_CH2);
-	LL_TIM_EnableDMAReq_CC1(TIM4);
+	LL_TIM_CC_EnableChannel(TIM4, LL_TIM_CHANNEL_CH2);
+//	LL_TIM_EnableDMAReq_CC1(TIM4);
 	LL_TIM_EnableDMAReq_CC2(TIM4);
 	LL_TIM_EnableCounter(TIM4);
 }

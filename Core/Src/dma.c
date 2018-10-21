@@ -52,7 +52,7 @@
 /* USER CODE BEGIN 0 */
 
 //volatile uint8_t LEDbuffer[LED_BUFFER_SIZE];
-volatile uint8_t DMA_RX_Buffer[DMA_RX_BUFFER_SIZE];
+extern uint8_t LEDbuffer[LED_BUFFER_SIZE];
 
 /* USER CODE END 0 */
 
@@ -74,6 +74,9 @@ void MX_DMA_Init(void)
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_DMA1);
 
   /* DMA interrupt init */
+  /* DMA1_Channel4_IRQn interrupt configuration */
+  NVIC_SetPriority(DMA1_Channel4_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),5, 0));
+  NVIC_EnableIRQ(DMA1_Channel4_IRQn);
   /* DMA1_Channel5_IRQn interrupt configuration */
   NVIC_SetPriority(DMA1_Channel5_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),5, 0));
   NVIC_EnableIRQ(DMA1_Channel5_IRQn);
@@ -82,12 +85,6 @@ void MX_DMA_Init(void)
 
 /* USER CODE BEGIN 2 */
 void user_dmaInit() {
-	// DMA1_Channel5
-	LL_DMA_SetPeriphAddress(DMA1, LL_DMA_CHANNEL_5, (uint32_t) (&USART1->DR));
-	LL_DMA_SetMemoryAddress(DMA1, LL_DMA_CHANNEL_5, (uint32_t) DMA_RX_Buffer);
-	LL_DMA_SetDataLength(DMA1, LL_DMA_CHANNEL_5, DMA_RX_BUFFER_SIZE);
-	LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_5);
-
 	// DMA1_Channel1
 //	LL_DMA_SetPeriphAddress(DMA1, LL_DMA_CHANNEL_1, (uint32_t) (&TIM4->CCR1));
 //	LL_DMA_SetMemoryAddress(DMA1, LL_DMA_CHANNEL_1, (uint32_t) LEDbuffer);
@@ -98,11 +95,11 @@ void user_dmaInit() {
 
 	// DMA1_Channel4
 	LL_DMA_SetPeriphAddress(DMA1, LL_DMA_CHANNEL_4, (uint32_t) (&TIM4->CCR2));
-//	LL_DMA_SetMemoryAddress(DMA1, LL_DMA_CHANNEL_4, (uint32_t) LEDbuffer);
-//	LL_DMA_SetDataLength(DMA1, LL_DMA_CHANNEL_4, LED_BUFFER_SIZE + 1);
-	LL_DMA_EnableIT_TC(DMA1, LL_DMA_CHANNEL_4);
-	LL_DMA_EnableIT_TE(DMA1, LL_DMA_CHANNEL_4);
-	LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_4);
+	LL_DMA_SetMemoryAddress(DMA1, LL_DMA_CHANNEL_4, (uint32_t) LEDbuffer);
+	LL_DMA_SetDataLength(DMA1, LL_DMA_CHANNEL_4, LED_BUFFER_SIZE);
+//	LL_DMA_EnableIT_TC(DMA1, LL_DMA_CHANNEL_4);
+//	LL_DMA_EnableIT_TE(DMA1, LL_DMA_CHANNEL_4);
+//	LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_4);
 }
 
 /* USER CODE END 2 */
