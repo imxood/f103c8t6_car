@@ -150,7 +150,7 @@ PUTCHAR_PROTOTYPE {
 ////重定义fputc函数
 //int fputc(int ch, FILE *f) {
 //	while ((USART1->SR & 0X40) == 0)
-//		; //循环发�??,直到发�?�完�????????
+//		; //循环发�??,直到发�?�完�????????
 //	USART1->DR = (uint8_t) ch;
 //	return ch;
 //}
