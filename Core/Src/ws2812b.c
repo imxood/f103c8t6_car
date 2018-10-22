@@ -1,5 +1,6 @@
 #include "main.h"
 #include "cmsis_os.h"
+#include "ws2812b.h"
 
 volatile uint8_t LEDbuffer[LED_BUFFER_SIZE];
 

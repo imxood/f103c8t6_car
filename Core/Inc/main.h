@@ -66,8 +66,8 @@
 #include "stm32f1xx_ll_gpio.h"
 
 /* USER CODE BEGIN Includes */
+#include <stdio.h>
 #include <string.h>
-#include <ws2812b.h>
 
 /* USER CODE END Includes */
 

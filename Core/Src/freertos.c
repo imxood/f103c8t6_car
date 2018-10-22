@@ -55,8 +55,9 @@
 #include "cmsis_os.h"
 
 /* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */     
-#include <stdio.h>
+/* USER CODE BEGIN Includes */
+#include "ws2812b.h"
+#include "test_pulse.h"
 
 /* USER CODE END Includes */
 
@@ -96,6 +97,7 @@ osThreadId MotorTaskHandle;
 osThreadId MonitorTaskHandle;
 osThreadId EncoderTaskHandle;
 osThreadId WS2812TaskHandle;
+osThreadId PluseTaskHandle;
 osSemaphoreId serialSemHandle;
 
 /* Private function prototypes -----------------------------------------------*/
@@ -108,64 +110,69 @@ void startMotorTask(void const * argument);
 void startMonitorTask(void const * argument);
 void startEncoderTask(void const * argument);
 void startWS2812Task(void const * argument);
+void startPluseTask(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /**
-  * @brief  FreeRTOS initialization
-  * @param  None
-  * @retval None
-  */
+ * @brief  FreeRTOS initialization
+ * @param  None
+ * @retval None
+ */
 void MX_FREERTOS_Init(void) {
-  /* USER CODE BEGIN Init */
+	/* USER CODE BEGIN Init */
 
-  /* USER CODE END Init */
+	/* USER CODE END Init */
 
-  /* USER CODE BEGIN RTOS_MUTEX */
+	/* USER CODE BEGIN RTOS_MUTEX */
 	/* add mutexes, ... */
-  /* USER CODE END RTOS_MUTEX */
+	/* USER CODE END RTOS_MUTEX */
 
-  /* Create the semaphores(s) */
-  /* definition and creation of serialSem */
-  osSemaphoreDef(serialSem);
-  serialSemHandle = osSemaphoreCreate(osSemaphore(serialSem), 1);
+	/* Create the semaphores(s) */
+	/* definition and creation of serialSem */
+	osSemaphoreDef(serialSem);
+	serialSemHandle = osSemaphoreCreate(osSemaphore(serialSem), 1);
 
-  /* USER CODE BEGIN RTOS_SEMAPHORES */
+	/* USER CODE BEGIN RTOS_SEMAPHORES */
 	/* add semaphores, ... */
-  /* USER CODE END RTOS_SEMAPHORES */
+	/* USER CODE END RTOS_SEMAPHORES */
 
-  /* USER CODE BEGIN RTOS_TIMERS */
+	/* USER CODE BEGIN RTOS_TIMERS */
 	/* start timers, add new ones, ... */
-  /* USER CODE END RTOS_TIMERS */
+	/* USER CODE END RTOS_TIMERS */
 
-  /* Create the thread(s) */
-  /* definition and creation of DefaultTask */
-  osThreadDef(DefaultTask, startDefaultTask, osPriorityNormal, 0, 128);
-  DefaultTaskHandle = osThreadCreate(osThread(DefaultTask), NULL);
+	/* Create the thread(s) */
+	/* definition and creation of DefaultTask */
+	osThreadDef(DefaultTask, startDefaultTask, osPriorityNormal, 0, 128);
+	DefaultTaskHandle = osThreadCreate(osThread(DefaultTask), NULL);
 
-  /* definition and creation of MotorTask */
-  osThreadDef(MotorTask, startMotorTask, osPriorityIdle, 0, 128);
-  MotorTaskHandle = osThreadCreate(osThread(MotorTask), NULL);
+	/* definition and creation of MotorTask */
+	osThreadDef(MotorTask, startMotorTask, osPriorityIdle, 0, 128);
+	MotorTaskHandle = osThreadCreate(osThread(MotorTask), NULL);
 
-  /* definition and creation of MonitorTask */
-  osThreadDef(MonitorTask, startMonitorTask, osPriorityIdle, 0, 128);
-  MonitorTaskHandle = osThreadCreate(osThread(MonitorTask), NULL);
+	/* definition and creation of MonitorTask */
+	osThreadDef(MonitorTask, startMonitorTask, osPriorityIdle, 0, 128);
+	MonitorTaskHandle = osThreadCreate(osThread(MonitorTask), NULL);
 
-  /* definition and creation of EncoderTask */
-  osThreadDef(EncoderTask, startEncoderTask, osPriorityIdle, 0, 128);
-  EncoderTaskHandle = osThreadCreate(osThread(EncoderTask), NULL);
+	/* definition and creation of EncoderTask */
+	osThreadDef(EncoderTask, startEncoderTask, osPriorityIdle, 0, 128);
+	EncoderTaskHandle = osThreadCreate(osThread(EncoderTask), NULL);
 
-  /* definition and creation of WS2812Task */
-  osThreadDef(WS2812Task, startWS2812Task, osPriorityIdle, 0, 128);
-  WS2812TaskHandle = osThreadCreate(osThread(WS2812Task), NULL);
+	/* definition and creation of WS2812Task */
+	osThreadDef(WS2812Task, startWS2812Task, osPriorityIdle, 0, 128);
+	WS2812TaskHandle = osThreadCreate(osThread(WS2812Task), NULL);
 
-  /* USER CODE BEGIN RTOS_THREADS */
+	/* definition and creation of PluseTask */
+	osThreadDef(PluseTask, startPluseTask, osPriorityIdle, 0, 128);
+	PluseTaskHandle = osThreadCreate(osThread(PluseTask), NULL);
+
+	/* USER CODE BEGIN RTOS_THREADS */
 	/* add threads, ... */
-  /* USER CODE END RTOS_THREADS */
+	/* USER CODE END RTOS_THREADS */
 
-  /* USER CODE BEGIN RTOS_QUEUES */
+	/* USER CODE BEGIN RTOS_QUEUES */
 	/* add queues, ... */
-  /* USER CODE END RTOS_QUEUES */
+	/* USER CODE END RTOS_QUEUES */
 }
 
 /* USER CODE BEGIN Header_startDefaultTask */
@@ -175,16 +182,15 @@ void MX_FREERTOS_Init(void) {
  * @retval None
  */
 /* USER CODE END Header_startDefaultTask */
-void startDefaultTask(void const * argument)
-{
+void startDefaultTask(void const * argument) {
 
-  /* USER CODE BEGIN startDefaultTask */
+	/* USER CODE BEGIN startDefaultTask */
 	/* Infinite loop */
 	for (;;) {
 //		LL_TIM_GetCounter(TIM3);
 		osDelay(1000);
 	}
-  /* USER CODE END startDefaultTask */
+	/* USER CODE END startDefaultTask */
 }
 
 /* USER CODE BEGIN Header_startMotorTask */
@@ -194,9 +200,8 @@ void startDefaultTask(void const * argument)
  * @retval None
  */
 /* USER CODE END Header_startMotorTask */
-void startMotorTask(void const * argument)
-{
-  /* USER CODE BEGIN startMotorTask */
+void startMotorTask(void const * argument) {
+	/* USER CODE BEGIN startMotorTask */
 	/* Infinite loop */
 	for (;;) {
 //		LL_TIM_OC_SetCompareCH2(TIM2, 2400);
@@ -210,7 +215,7 @@ void startMotorTask(void const * argument)
 		LL_TIM_OC_SetCompareCH2(TIM2, 7200);
 		osDelay(2000);
 	}
-  /* USER CODE END startMotorTask */
+	/* USER CODE END startMotorTask */
 }
 
 /* USER CODE BEGIN Header_startMonitorTask */
@@ -220,9 +225,8 @@ void startMotorTask(void const * argument)
  * @retval None
  */
 /* USER CODE END Header_startMonitorTask */
-void startMonitorTask(void const * argument)
-{
-  /* USER CODE BEGIN startMonitorTask */
+void startMonitorTask(void const * argument) {
+	/* USER CODE BEGIN startMonitorTask */
 	/* Infinite loop */
 	volatile uint32_t encode = 0;
 	for (;;) {
@@ -235,7 +239,7 @@ void startMonitorTask(void const * argument)
 
 		osDelay(250);
 	}
-  /* USER CODE END startMonitorTask */
+	/* USER CODE END startMonitorTask */
 }
 
 /* USER CODE BEGIN Header_startEncoderTask */
@@ -245,9 +249,8 @@ void startMonitorTask(void const * argument)
  * @retval None
  */
 /* USER CODE END Header_startEncoderTask */
-void startEncoderTask(void const * argument)
-{
-  /* USER CODE BEGIN startEncoderTask */
+void startEncoderTask(void const * argument) {
+	/* USER CODE BEGIN startEncoderTask */
 	/* Infinite loop */
 	uint32_t cnt = 0;
 	for (;;) {
@@ -260,7 +263,7 @@ void startEncoderTask(void const * argument)
 
 		osDelay(250);
 	}
-  /* USER CODE END startEncoderTask */
+	/* USER CODE END startEncoderTask */
 }
 
 /* USER CODE BEGIN Header_startWS2812Task */
@@ -270,9 +273,8 @@ void startEncoderTask(void const * argument)
  * @retval None
  */
 /* USER CODE END Header_startWS2812Task */
-void startWS2812Task(void const * argument)
-{
-  /* USER CODE BEGIN startWS2812Task */
+void startWS2812Task(void const * argument) {
+	/* USER CODE BEGIN startWS2812Task */
 	/* Infinite loop */
 	for (;;) {
 		// Some example procedures showing how to display to the pixels:
@@ -286,9 +288,27 @@ void startWS2812Task(void const * argument)
 //
 //		rainbow(20);			 //彩虹
 		rainbowCycle(20);		 //循环
-//		theaterChaseRainbow(50); //呼吸�??
+//		theaterChaseRainbow(50); //呼吸�???
 	}
-  /* USER CODE END startWS2812Task */
+	/* USER CODE END startWS2812Task */
+}
+
+/* USER CODE BEGIN Header_startPluseTask */
+/**
+ * @brief Function implementing the PluseTask thread.
+ * @param argument: Not used
+ * @retval None
+ */
+/* USER CODE END Header_startPluseTask */
+void startPluseTask(void const * argument) {
+	/* USER CODE BEGIN startPluseTask */
+	/* Infinite loop */
+	for (;;) {
+		pulse_calc();
+		pulse_update();
+		osDelay(50);
+	}
+	/* USER CODE END startPluseTask */
 }
 
 /* Private application code --------------------------------------------------*/
