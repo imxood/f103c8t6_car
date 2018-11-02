@@ -51,11 +51,9 @@
 
 /* USER CODE BEGIN 0 */
 #include "ws2812b.h"
-#include "test_pulse.h"
 
 //volatile uint8_t LEDbuffer[LED_BUFFER_SIZE];
 extern uint8_t LEDbuffer[LED_BUFFER_SIZE];
-extern uint8_t pulseBuf[PluseLen];
 
 /* USER CODE END 0 */
 
@@ -77,24 +75,24 @@ void MX_DMA_Init(void)
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_DMA1);
 
   /* DMA interrupt init */
-  /* DMA1_Channel1_IRQn interrupt configuration */
-  NVIC_SetPriority(DMA1_Channel1_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),5, 0));
-  NVIC_EnableIRQ(DMA1_Channel1_IRQn);
   /* DMA1_Channel4_IRQn interrupt configuration */
   NVIC_SetPriority(DMA1_Channel4_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),5, 0));
   NVIC_EnableIRQ(DMA1_Channel4_IRQn);
   /* DMA1_Channel5_IRQn interrupt configuration */
   NVIC_SetPriority(DMA1_Channel5_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),5, 0));
   NVIC_EnableIRQ(DMA1_Channel5_IRQn);
+  /* DMA1_Channel7_IRQn interrupt configuration */
+  NVIC_SetPriority(DMA1_Channel7_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),5, 0));
+  NVIC_EnableIRQ(DMA1_Channel7_IRQn);
 
 }
 
 /* USER CODE BEGIN 2 */
 void user_dmaInit() {
 	// DMA1_Channel1
-	LL_DMA_SetPeriphAddress(DMA1, LL_DMA_CHANNEL_1, (uint32_t) (&TIM4->CCR1));
-	LL_DMA_SetMemoryAddress(DMA1, LL_DMA_CHANNEL_1, (uint32_t) pulseBuf);
-	LL_DMA_SetDataLength(DMA1, LL_DMA_CHANNEL_1, PluseLen);
+//	LL_DMA_SetPeriphAddress(DMA1, LL_DMA_CHANNEL_1, (uint32_t) (&TIM4->CCR1));
+//	LL_DMA_SetMemoryAddress(DMA1, LL_DMA_CHANNEL_1, (uint32_t) pulseBuf);
+//	LL_DMA_SetDataLength(DMA1, LL_DMA_CHANNEL_1, PluseLen);
 
 	// DMA1_Channel4
 	LL_DMA_SetPeriphAddress(DMA1, LL_DMA_CHANNEL_4, (uint32_t) (&TIM4->CCR2));

@@ -168,20 +168,6 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
-* @brief This function handles DMA1 channel1 global interrupt.
-*/
-void DMA1_Channel1_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMA1_Channel1_IRQn 0 */
-
-  /* USER CODE END DMA1_Channel1_IRQn 0 */
-  
-  /* USER CODE BEGIN DMA1_Channel1_IRQn 1 */
-
-  /* USER CODE END DMA1_Channel1_IRQn 1 */
-}
-
-/**
 * @brief This function handles DMA1 channel4 global interrupt.
 */
 void DMA1_Channel4_IRQHandler(void)
@@ -209,6 +195,20 @@ void DMA1_Channel5_IRQHandler(void)
   /* USER CODE BEGIN DMA1_Channel5_IRQn 1 */
 
   /* USER CODE END DMA1_Channel5_IRQn 1 */
+}
+
+/**
+* @brief This function handles DMA1 channel7 global interrupt.
+*/
+void DMA1_Channel7_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Channel7_IRQn 0 */
+
+  /* USER CODE END DMA1_Channel7_IRQn 0 */
+  
+  /* USER CODE BEGIN DMA1_Channel7_IRQn 1 */
+
+  /* USER CODE END DMA1_Channel7_IRQn 1 */
 }
 
 /**
@@ -244,7 +244,7 @@ void USART1_IRQHandler(void)
 	// check if the usart1 transmission complate flag is set
 	if (LL_USART_IsActiveFlag_TC(USART1)) {
 //		LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_13); // 关闭LED
-		LL_USART_ClearFlag_TC(USART1);
+//		LL_USART_ClearFlag_TC(USART1);
 	}
 // check if the usart1 receive a frame data
 	else if (LL_USART_IsActiveFlag_IDLE(USART1)) {
